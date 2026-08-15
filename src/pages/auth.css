@@ -1,0 +1,385 @@
+/* ==========================================================================
+   MenaCare — Auth pages (Login / Sign Up)
+   Single centered card layout, pink → purple theme
+   ========================================================================== */
+
+:root {
+  --pink: #FF99D8;
+  --purple: #64007D;
+  --purple-deep: #3B0754;
+  --page-bg: #FBE4E4;
+  --card-radius: 32px;
+  --input-radius: 999px;
+  --ink: #2A1035;
+  --ink-soft: rgba(255, 255, 255, 0.78);
+  --ink-faint: rgba(255, 255, 255, 0.55);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+}
+
+/* ---- Page shell -------------------------------------------------------- */
+
+.auth-shell {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--page-bg);
+}
+
+/* The old split-screen visual panel collapses to nothing in the new
+   single-card layout, but the rule is kept in case it's still rendered. */
+.auth-visual {
+  display: none;
+}
+
+.auth-form-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---- Card ---------------------------------------------------------------*/
+
+.auth-form {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 44px 36px 40px;
+  border-radius: var(--card-radius);
+  background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 65%, var(--purple-deep) 100%);
+  box-shadow: 0 24px 60px rgba(100, 0, 125, 0.35);
+  color: white;
+}
+
+.back-home {
+  display: inline-block;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.back-home:hover {
+  color: white;
+}
+
+.auth-form h1 {
+  margin: 0 0 6px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.02em;
+}
+
+.auth-form > p {
+  margin: 0 0 28px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+/* ---- Fields -------------------------------------------------------------*/
+
+.form-input-wrapper {
+  margin-bottom: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding-left: 6px;
+}
+
+.field input {
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  border-radius: var(--input-radius);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
+  font-size: 14px;
+  outline: none;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.field input::placeholder {
+  color: rgba(42, 16, 53, 0.4);
+}
+
+.field input:focus {
+  background: white;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55);
+}
+
+.field input:disabled {
+  opacity: 0.6;
+}
+
+.field input.input-error {
+  box-shadow: 0 0 0 2px #ff5c7a;
+}
+
+.field input.input-success {
+  box-shadow: 0 0 0 2px #4ade80;
+}
+
+.input-helper {
+  margin-top: 6px;
+  padding-left: 6px;
+  font-size: 12px;
+}
+
+.input-helper.error {
+  color: #ffd3dc;
+}
+
+.input-helper.success {
+  color: #baf5cf;
+}
+
+.section-note {
+  margin: 4px 0 14px;
+  padding-left: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field-row a {
+  color: var(--ink-soft) !important;
+}
+
+.field-row a:hover {
+  color: white !important;
+}
+
+/* ---- Password strength meter (sign up) ----------------------------------*/
+
+.password-strength {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  padding-left: 6px;
+}
+
+.password-strength-bar {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.password-strength-bar.weak {
+  background: #ff5c7a;
+}
+
+.password-strength-bar.fair {
+  background: #ffb84d;
+}
+
+.password-strength-bar.good {
+  background: #ffe066;
+}
+
+.password-strength-bar.strong {
+  background: #4ade80;
+}
+
+.password-strength-text {
+  margin-top: 6px;
+  padding-left: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.password-strength-text.weak { color: #ffb0c0; }
+.password-strength-text.fair { color: #ffd199; }
+.password-strength-text.good { color: #fff0b0; }
+.password-strength-text.strong { color: #baf5cf; }
+
+/* ---- Checkbox (sign up terms) --------------------------------------------*/
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 8px 0 24px;
+  padding-left: 6px;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  accent-color: white;
+}
+
+.checkbox-wrapper label {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.checkbox-wrapper label a {
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* ---- Button ---------------------------------------------------------------*/
+
+.btn {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  font-weight: 700;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  cursor: not-allowed;
+}
+
+.btn-lg {
+  padding: 16px;
+  font-size: 16px;
+}
+
+.btn-block {
+  width: 100%;
+  border-radius: var(--input-radius);
+  margin-top: 6px;
+}
+
+/* ---- Brand badge (replaces the old side-panel logo) ----------------------*/
+
+.brand-badge {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin: -18px auto 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+  background: white;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 24px rgba(59, 7, 84, 0.35);
+}
+
+.badge-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+/* ---- Divider / social / switch line ---------------------------------------*/
+
+.form-separator {
+  text-align: center;
+  margin: 22px 0 18px;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.form-separator::before,
+.form-separator::after {
+  content: '';
+  display: inline-block;
+  width: 30%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  vertical-align: middle;
+  margin: 0 10px;
+}
+
+.social-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.btn-social {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.btn-social:hover:not(:disabled) {
+  background: white;
+  transform: translateY(-2px);
+}
+
+.switch-line {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.switch-line a {
+  color: white;
+}
+
+/* ---- Responsive -------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  .auth-form {
+    padding: 36px 24px 32px;
+    border-radius: 24px;
+  }
+
+  .auth-form h1 {
+    font-size: 26px;
+  }
+}

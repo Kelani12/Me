@@ -1,13 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  doc,
-  setDoc,
-  serverTimestamp
-} from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_ww_y4JugNrNUwcfNmDVi7rcVXtMOk0c",
@@ -27,20 +20,35 @@ export const auth = getAuth(app);
 // Firestore Database
 export const db = getFirestore(app);
 
-// Create a user document in Firestore
-export async function createUserDocument(uid, userData) {
-  await setDoc(doc(db, "users", uid), {
-    ...userData,
+// Create the Firestore users/{uid} doc right after signup.
+// Accepts either the new shape ({ firstName, dateOfBirth, isMinor, guardianId })
+// or the older { name } shape — both normalize to the same schema.
+export async function createUserDocument(uid, userData = {}) {
+  await setDoc(doc(db, 'users', uid), {
+    firstName: userData.firstName ?? userData.name ?? '',
+    email: userData.email ?? '',
+    dateOfBirth: userData.dateOfBirth ?? null,
+    isMinor: userData.isMinor ?? false,
+    guardianId: userData.guardianId ?? null,
     createdAt: serverTimestamp(),
   });
 }
 
-// Get users from Firestore
-export async function getUsers() {
-  const snapshot = await getDocs(collection(db, "users"));
+// Fetch a user's profile — use after login to populate the dashboard.
+export async function getUserDocument(uid) {
+  const snap = await getDoc(doc(db, 'users', uid));
+  return snap.exists() ? { id: snap.id, ...snap.data() } : null;
+}
 
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+// Create a guardian doc (auto-generated ID) for minor signups needing consent.
+// Returns the new guardianId so it can be saved onto the user's doc.
+export async function createGuardian({ name, email, phone, relationship }) {
+  const ref = await addDoc(collection(db, 'guardians'), {
+    name,
+    email,
+    phone,
+    relationship,
+    consentStatus: 'pending',
+  });
+  return ref.id;
 }
