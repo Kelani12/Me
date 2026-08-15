@@ -1,5 +1,5 @@
 import { app, db } from "./firebase-config.js";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const statusEl = document.getElementById("status");
 const button = document.getElementById("saveTest");
