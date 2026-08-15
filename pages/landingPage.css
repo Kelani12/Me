@@ -1,0 +1,498 @@
+/* MenaCare landing page
+   Fonts: Fraunces (display / headings), Plus Jakarta Sans (body)
+   Add these to index.html <head>:
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+   NOTE: every selector below is scoped under .landing-page so it can never
+   be overridden by other global stylesheets in the project (e.g. the
+   default Vite/React template CSS, which also happens to define a plain
+   .hero class). Always target .landing-page .whatever, never .whatever alone.
+*/
+
+:root {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --color-background: #fffafd;
+  --color-foreground: #241a30;
+  --color-card: #ffffff;
+  --color-primary: #64007d;       /* dark neon pink/purple */
+  --color-primary-foreground: #fff8fb;
+  --color-secondary: #ff99d8;     /* carnation pink */
+  --color-secondary-foreground: #3a1240;
+  --color-muted-foreground: #6b5b73;
+  --color-border: #f2d9ea;
+  --color-petal: #f9e3ef;
+  --color-ink: #050a30;
+  --color-ink-foreground: #f7f6fc;
+
+  --shadow-soft: 0 24px 60px -28px rgba(100, 0, 125, 0.45);
+  --shadow-petal: 0 12px 40px -18px rgba(255, 153, 216, 0.6);
+}
+
+/* ---------------------------------------------------------------------
+   Global safety net.
+   The black strip on the left edge in your screenshots is the <body>'s
+   default background showing through a horizontal overflow (the browser
+   reserves the hero image's native 1024px intrinsic size before layout
+   settles, which pushes the page wider than the viewport and reveals
+   whatever sits behind .landing-page). Locking box-sizing, killing the
+   default body margin, and clipping x-overflow removes that gap.
+   If a black strip still shows up, it's coming from Header/Footer's own
+   stylesheet (not included here) rather than this file.
+------------------------------------------------------------------------ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--color-background);
+  color-scheme: light;
+}
+
+/* Vite's starter index.css also sets body { display:flex; place-items:center }
+   so it can center a small #root. With real page content, #root doesn't
+   stretch to fill that flex row, and the body's own dark background shows
+   through on both sides. Forcing block layout removes that. */
+body {
+  display: block !important;
+  place-items: unset !important;
+  min-width: 0 !important;
+}
+
+/* Scrollbar hidden entirely (page still scrolls, there's just no visible
+   track/thumb/border on the edge). */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* The Vite React starter ships with #root { max-width:1280px; margin:0 auto;
+   padding:2rem } and a dark :root background in index.css. That stylesheet
+   loads independently of this one and was winning the cascade, which is
+   what produced the black gutters down each side. Overriding #root here,
+   scoped as tightly as possible, removes it without touching any JSX. */
+#root {
+  display: block !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+  background: var(--color-background) !important;
+}
+
+.landing-page {
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  background: linear-gradient(180deg, #fffafd 0%, #fdeef7 100%);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+}
+
+.landing-page h1,
+.landing-page h2,
+.landing-page h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------
+   Entrance animations
+   The JSX applies .fade-up / .fade-in with an inline animationDelay to
+   almost everything, but neither class nor keyframes existed in the
+   stylesheet — so every one of those elements was sitting at its
+   default opacity of 0 forever. That's why "Your body.", the features
+   title, etc. were invisible. Defining them here (and giving each
+   element a real end-state) fixes visibility AND gives the page the
+   requested motion.
+------------------------------------------------------------------------ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes floatSlow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.landing-page .fade-up {
+  opacity: 0;
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.landing-page .fade-in {
+  opacity: 0;
+  animation: fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-page .fade-up,
+  .landing-page .fade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero */
+.landing-page .hero {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+  display: grid;
+  gap: 48px;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .landing-page .hero {
+    grid-template-columns: 1.1fr 0.9fr;
+    padding-top: 64px;
+  }
+}
+
+.landing-page .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 9999px;
+  background: var(--color-petal);
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-primary);
+}
+
+.landing-page .hero-title {
+  margin-top: 24px;
+  font-size: 48px;
+  line-height: 1.05;
+}
+
+@media (min-width: 640px) {
+  .landing-page .hero-title {
+    font-size: 60px;
+  }
+}
+
+/* This was the invisible-text bug: .hero-title-ghost had no rule at all,
+   so "Your body." / "Your journey." inherited opacity:0 from .fade-up
+   and never got painted. It's now fully visible, in the same ink color
+   as the rest of the heading. */
+.landing-page .hero-title-ghost {
+  display: inline-block;
+  color: var(--color-ink);
+  opacity: 1;
+}
+
+.landing-page .hero-title-accent {
+  display: inline-block;
+  background-image: linear-gradient(120deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.landing-page .hero-subtitle {
+  margin-top: 24px;
+  max-width: 420px;
+  font-size: 18px;
+  color: var(--color-muted-foreground);
+}
+
+.landing-page .hero-actions {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-margin-top: 96px;
+}
+
+@media (min-width: 640px) {
+  .landing-page .hero-actions {
+    flex-direction: row;
+  }
+}
+
+.landing-page .btn {
+  display: inline-block;
+  text-align: center;
+  border-radius: 9999px;
+  padding: 16px 32px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-page .btn:hover {
+  transform: translateY(-2px);
+}
+
+.landing-page .btn:active {
+  transform: translateY(0);
+}
+
+.landing-page .btn-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  box-shadow: var(--shadow-soft);
+}
+
+.landing-page .btn-primary:hover {
+  opacity: 0.9;
+}
+
+.landing-page .btn-outline {
+  background: var(--color-card);
+  color: var(--color-primary);
+  border: 1px solid var(--color-secondary);
+}
+
+.landing-page .btn-outline:hover {
+  background: var(--color-petal);
+}
+
+.landing-page .btn-secondary {
+  background: var(--color-secondary);
+  color: var(--color-secondary-foreground);
+  padding: 16px 36px;
+}
+
+.landing-page .btn-secondary:hover {
+  opacity: 0.9;
+}
+
+/* Hero image — sized down and given a gentle float so it doesn't
+   dominate the hero or force any horizontal overflow. */
+.landing-page .hero-image-wrap {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 280px;
+}
+
+@media (min-width: 640px) {
+  .landing-page .hero-image-wrap {
+    max-width: 320px;
+  }
+}
+
+.landing-page .hero-image-glow {
+  position: absolute;
+  inset: -16px;
+  border-radius: 40px;
+  background: rgba(255, 153, 216, 0.25);
+  filter: blur(32px);
+}
+
+.landing-page .hero-image-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 153, 216, 0.4);
+  background: var(--color-card);
+  padding: 10px;
+  box-shadow: var(--shadow-petal);
+  transition: transform 0.3s ease;
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.landing-page .hero-image-card:hover {
+  transform: translateY(-4px);
+}
+
+.landing-page .hero-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 26px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Features */
+.landing-page .features {
+  background: var(--color-card);
+  padding: 80px 0;
+  scroll-margin-top: 96px;
+}
+
+.landing-page .features-inner {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.landing-page .features-title {
+  max-width: 560px;
+  font-size: 36px;
+  color: var(--color-foreground);
+  opacity: 1;
+}
+
+.landing-page .features-grid {
+  margin-top: 48px;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .landing-page .features-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-page .features-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.landing-page .feature-card {
+  border-radius: 24px;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  padding: 28px;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.landing-page .feature-card:hover {
+  box-shadow: var(--shadow-petal);
+  transform: translateY(-4px);
+}
+
+.landing-page .feature-icon {
+  display: flex;
+  height: 48px;
+  width: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: var(--color-petal);
+  color: var(--color-primary);
+  transition: transform 0.25s ease;
+}
+
+.landing-page .feature-card:hover .feature-icon {
+  transform: rotate(-6deg) scale(1.06);
+}
+
+.landing-page .feature-card-title {
+  margin-top: 20px;
+  font-size: 20px;
+  color: var(--color-foreground);
+}
+
+.landing-page .feature-card-body {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--color-muted-foreground);
+}
+
+/* CTA */
+.landing-page .cta-section {
+  max-width: 1152px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.landing-page .cta-box {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 40px;
+  background: var(--color-ink);
+  color: var(--color-ink-foreground);
+  padding: 64px 32px;
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+
+.landing-page .cta-box .btn-secondary {
+  margin-top: 32px;
+}
+
+.landing-page .cta-title {
+  margin: 0 auto;
+  max-width: 640px;
+  font-size: 36px;
+  color: var(--color-ink-foreground);
+  opacity: 1;
+}
+
+.landing-page .cta-title-accent {
+  color: var(--color-secondary);
+}
+
+.landing-page .cta-subtitle {
+  margin: 16px auto 0;
+  max-width: 480px;
+  color: rgba(247, 246, 252, 0.7);
+}
+
+/* Footer */
+.landing-page .site-footer {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.landing-page .footer-logo {
+  height: 112px;
+  width: auto;
+  object-fit: contain;
+}
+
+.landing-page .footer-text {
+  font-size: 14px;
+  color: var(--color-muted-foreground);
+  margin: 0;
+}

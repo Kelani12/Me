@@ -1,15 +1,22 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Login from '../pages/login.jsx'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import LandingPage from "../pages/landingPage.jsx";
+import Login from "../pages/login.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* FIRST PAGE */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* LOGIN */}
         <Route path="/login" element={<Login />} />
+
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
