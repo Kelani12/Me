@@ -1,5 +1,5 @@
-import { app, database } from "./firebase-config.js";
-import { ref, push, set } from "firebase/database";
+import { app, db } from "./firebase-config.js";
+import { addDoc, collection } from "firebase/firestore";
 
 const statusEl = document.getElementById("status");
 const button = document.getElementById("saveTest");
@@ -12,16 +12,13 @@ if (app && app.options && app.options.projectId) {
 
 button.addEventListener("click", async () => {
   try {
-    const testRef = ref(database, "testConnection");
-    const newItem = push(testRef);
-
-    await set(newItem, {
-      message: "MenaCare Realtime Database connected",
+    const docRef = await addDoc(collection(db, "testCollection"), {
+      message: "MenaCare Firestore connected",
       createdAt: new Date().toISOString(),
     });
 
-    statusEl.textContent = `Realtime Database connected. Test item written to: ${newItem.key}`;
+    statusEl.textContent = `Firestore connected. Test document added with ID: ${docRef.id}`;
   } catch (error) {
-    statusEl.textContent = `Realtime Database connection failed: ${error.message}`;
+    statusEl.textContent = `Firestore connection failed: ${error.message}`;
   }
 });
